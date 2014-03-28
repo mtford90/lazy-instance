@@ -1,7 +1,7 @@
 from importlib import import_module
 
 
-class LazyObjectMeta(type):
+class LazyObjectProxyMeta(type):
 
     def __instancecheck__(self, instance):
         return object.__getattribute__(self, "_lp_obj").__instancecheck__(instance)
@@ -11,12 +11,9 @@ class LazyObjectMeta(type):
 
 
 # noinspection PyMissingConstructor
-class LazyObject(object):
-    """
-    This is essentially a hack to get around circular imports that occur when using Serializers as custom_fields as well
-    as reverse relations. It lazily instantiates an object of class_name
-    """
-    __metaclass__ = LazyObjectMeta
+class LazyObjectProxy(object):
+
+    __metaclass__ = LazyObjectProxyMeta
     __slots__ = ['_lp_class_name', '_lp_args', '_lp_kwargs', '_lp_obj', '_lazily_instantiate']
 
     def __init__(self, class_name, *args, **kwargs):
